@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="bootstrap.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <title></title>
+</head>
+<body class="bg-dark" style="direction: rtl;">
+    <main class="bg-white p-5 m-5 rounded row text-white gap-4">
+        <div id="show" onclick="show_main()">x</div>
+        <div class="row col-6 text-center bg-dark p-2 rounded-3">
+            <!-- <p class="col-4" onclick="incrementYear(1)"><i class="bi bi-caret-right-fill"></i></p> -->
+            <h2 class="col-12 pb-3"><input type="text"  class="year" id="year" ></h2>
+            <!-- <p class="col-4" onclick="incrementYear(0)"><i class="bi bi-caret-left-fill"></i></p> -->
+            <p class="col-4" onclick="incrementMonth(1)">&lt;</p>
+            <h6 class="col-4"><p id="month-name"></p> <input type="number" id="month" value="6" style="display: none;"></h6>
+            <p class="col-4" onclick="incrementMonth(0)">&gt;</p>
+            <div class="jour pb-2">
+                <div>1</div>
+                <div>2</div>
+                <div>3</div>
+                <div>4</div>
+                <div>5</div>
+                <div>6</div>
+                <div>7</div>
+                <div>8</div>
+                <div>9</div>
+                <div>10</div>
+                <div>11</div>
+                <div>12</div>
+                <div>13</div>
+                <div>14</div>
+                <div>15</div>
+                <div>16</div>
+                <div>17</div>
+                <div>18</div>
+                <div>19</div>
+                <div>20</div>
+                <div>21</div>
+                <div>22</div>
+                <div>23</div>
+                <div>24</div>
+                <div>25</div>
+                <div>26</div>
+                <div>27</div>
+                <div>28</div>
+                <div>29</div>
+                <div>30</div>
+                <div>31</div>
+            </div>
+        </div>
+        <div class="col-6 text-center row bg-dark mx-auto rounded-3">
+            <div class="col-12 my-3">
+                <input  type="text" class="form-control text-center w-100" id="search">
+            </div>
+            <div class="col-12 justify-content-center pb-3 row gap-3 mx-auto">
+                <div onclick="filter_table(this,'s',0)" style="background: green; --c:green; padding: 7px;"  class="col-3 rounded-4 mx-auto s"></div>
+                <div onclick="filter_table(this,'s',1)" style="background: orange; --c:orange; padding: 7px;" class="col-3 rounded-4 mx-auto s"></div>
+                <div onclick="filter_table(this,'s',2)" style="background: red; --c:red; padding: 7px;"    class="col-3 rounded-4 mx-auto s"></div>
+            </div>
+           
+            <div class="col-12 row mx-auto">
+                <div onclick="filter_table(this.firstElementChild,'t',0)" class="col-4"><button class="btn btn-light t">ذهب</button></div>
+                <div onclick="filter_table(this.firstElementChild,'t',1)" class="col-4"><button class="btn btn-light t">فضة</button></div>
+                <div onclick="filter_table(this.firstElementChild,'t',2)" class="col-4"><button class="btn btn-light t">اخرى</button></div>
+            </div>
+
+             <div class="col-12 row mx-auto">
+                <div onclick="filter_table(this.firstElementChild,'o',0)" class="col-3"><button class="btn btn-light o">بيع</button></div>
+                <div onclick="filter_table(this.firstElementChild,'o',1)" class="col-3"><button class="btn btn-light o">إصلاح</button></div>
+                <div onclick="filter_table(this.firstElementChild,'o',2)" class="col-3"><button class="btn btn-light o">تشلال</button></div>
+                <div onclick="filter_table(this.firstElementChild,'o',3)" class="col-3"><button class="btn btn-light o">شراء</button></div>
+            </div>
+            <div class="col-12">
+                <p onclick="again()" class="btn btn-primary w-100 p-0 ">الكل</p>
+            </div>
+        </div>
+    </main> 
+    <table class="table table-dark table-bordered text-center mt-4">
+        <thead >
+            <tr>
+                <th>الاسم</th>
+                <th colspan="4">الخدمة</th>
+                <th colspan="3">المعدن</th>
+                <th>النوع</th>
+                <th>غرام</th>
+                <th>ثمن</th>
+                <th colspan="3">الحالة</th>
+                <th>العملية</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th>بيع</th>
+                <th>إصلاح</th>
+                <th>تشلال</th>
+                <th>شراء</th>
+                <th>ذهب</th>
+                <th>فضة</th>
+                <th>اخرى</th>
+                <th colspan="3"></th>
+                <th>تم</th>
+                <th>في الانتظار</th>
+                <th>إلغاء</th>
+                <th><input type="submit" id="filter" value="فلتر" onclick="show_main(this)" style="--c:green;display: none;" class="mx-auto"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><input type="text" name="" id="nom"></td>
+                <td><input type="radio" checked value="0" name="operation" id="sale"> <label for="sale" class="label-radio"></label></td>
+                <td><input type="radio" value="1" name="operation" id="repair"> <label for="repair" class="label-radio"></label></td>
+                <td><input type="radio" value="2" name="operation" id="tashlal"> <label for="tashlal" class="label-radio"></label></td>
+                <td><input type="radio" value="3" name="operation" id="purchase"> <label for="purchase" class="label-radio"></label></td>
+                <td><input type="radio" value="0" name="type" id="gold"> <label for="gold" class="label-radio"></label></td>
+                <td><input type="radio" checked value="1" name="type" id="silver"> <label for="silver" class="label-radio"></label></td>
+                <td><input type="radio" value="2" name="type" id="other"> <label for="other" class="label-radio"></label></td>
+                <td><input type="text" id="type" ></td>
+                <td><input type="number" step="0.01" id="gram" ></td>
+                <td><input type="number" step="0.01" id="price" ></td>
+                <td><input type="radio" checked value="0" name="status" id="done"> <label for="done" class="label-radio" style="--c:green"></label></td>
+                <td><input type="radio" value="1" name="status" id="pending"> <label for="pending" class="label-radio" style="--c:orange"></label></td>
+                <td><input type="radio" value="2" name="status" id="canceled"> <label for="canceled" class="label-radio" style="--c:red"></label></td>
+                <td><input type="submit" id="add" value="إضافة" onclick="add(this)"></td>
+            </tr>
+            <tr>
+                    <td colspan="15" class="time fw-bolder" id="totale"></td>
+            </tr>
+        </tbody>
+        <tbody id="tbody">
+        </tbody>
+    </table>
+    <script src="app.js"></script>
+    <script>
+        if (navigator.serviceWorker) {
+    navigator.serviceWorker.register('service-worker.js');
+}
+    </script>
+</body>
+</html>
