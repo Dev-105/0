@@ -81,7 +81,7 @@ function data_table(array) {
   table.innerHTML = "";
   let totale = 0 ;
   array.forEach((column, i) => {
-    if (column.newdata.status == 2) {
+    if (column.newdata.status == 2 || column.newdata.operation == 0) {
         totale -= Number(column.newdata.price) ;
     }else{
         totale += Number(column.newdata.price) ;
