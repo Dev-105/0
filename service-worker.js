@@ -1,7 +1,7 @@
 const CACHE_NAME = 'my-site-cache-v1';
 const urlsToCache = [
   '/0/', // Root page
-  'index.html',
+  '/0/index.html',
   '/0/style.css',
   '/0/app.js',
   '/0/manifest.json',
