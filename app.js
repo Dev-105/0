@@ -381,6 +381,7 @@ function again() {
     el.classList.remove("clicked");
   });
   input.value = "";
+  filter = [-1,-1,-1];
 }
 function search() {
   input.onkeyup = () => {
