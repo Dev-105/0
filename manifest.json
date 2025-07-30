@@ -1,7 +1,7 @@
 {
   "name": "Hanine",
   "short_name": "7 GESTION 7",
-  "start_url": "/index.html",
+  "start_url": "/0/index.html",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#ffffff"
