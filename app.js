@@ -1,6 +1,12 @@
 // localStorage
 let data = [];
-let fulltime = ["", "", ""];
+let id = 0;
+let canvas_mode = [0,0];
+let fulltime = [
+  new Date().getDate(),
+  new Date().getMonth() + 1,
+  new Date().getFullYear(),
+];
 let filter = [-1, -1, -1];
 let o = 0;
 let t = 0;
@@ -12,25 +18,36 @@ let count_show = 0;
 if (localStorage.data) {
   // console.log(localStorage.data)
   data = JSON.parse(localStorage.data);
-  // console.log(localStorage.data)
   // Populate the table with data
 } else {
   localStorage.data = JSON.stringify(data);
 }
+if (localStorage.id) {
+  id = localStorage.id;
+} else {
+  localStorage.id = id;
+}
 // add in table
-function add(click, i) {
+function add(click, i = -1) {
+  //vide
+  function vide() {
+    document.getElementById("nom").value = "";
+    document.getElementById("gram").value = "";
+    document.getElementById("price").value = "";
+    document.getElementById("type").value = "";
+    document.querySelectorAll('input[name="operation"]')[1].checked = true;
+    document.querySelectorAll('input[name="type"]')[1].checked = true;
+    document.querySelectorAll('input[name="status"]')[0].checked = true;
+  }
   //efect on click
+
   click.style.background = "green";
   setTimeout(() => {
     click.style.background = "#007bff";
     click.value = "إضافة";
   }, 1000);
   // get values from inputs
-  if (i >= 0) {
-    data.splice(i, 1);
-    data_table(data);
-    localStorage.data = JSON.stringify(data);
-  }
+
   let name = document.getElementById("nom").value;
   let operation = document.querySelector(
     'input[name="operation"]:checked'
@@ -46,10 +63,12 @@ function add(click, i) {
     (new Date().getMonth() + 1) +
     "-" +
     new Date().getFullYear();
-
+  id++;
+  localStorage.id = id;
   // console.log(name, operation, type, gram, price, description, status,time);
   // create object
   let user = {
+    id: id,
     time: time,
     newdata: {
       name: name,
@@ -62,29 +81,58 @@ function add(click, i) {
     },
   };
 
+  if (i >= 0) {
+    data[i].newdata.name = name;
+    data[i].newdata.operation = operation;
+    data[i].newdata.type = type;
+    data[i].newdata.gram = gram;
+    data[i].newdata.price = price;
+    data[i].newdata.status = status;
+    data[i].newdata.description = description;
+    localStorage.data = JSON.stringify(data);
+    data_table(
+      data.filter((item) => {
+        return (
+          (filter[0] < 0 || item.newdata.operation == filter[0]) &&
+          (filter[1] < 0 || item.newdata.type == filter[1]) &&
+          (filter[2] < 0 || item.newdata.status == filter[2]) &&
+          item.time == fulltime.join("-") &&
+          (item.newdata.name
+            .toLowerCase()
+            .includes(input.value.toLowerCase()) ||
+            item.newdata.description
+              .toLowerCase()
+              .includes(input.value.toLowerCase()) ||
+            item.newdata.gram
+              .toLowerCase()
+              .includes(input.value.toLowerCase()) ||
+            item.newdata.price
+              .toLowerCase()
+              .includes(input.value.toLowerCase()))
+        );
+      })
+    );
+    vide();
+    return true;
+  }
   // add user to local storage
   data.unshift(user);
   localStorage.data = JSON.stringify(data);
-  data_table(data);
-  agenda();
+  data_table(data.filter((item) => item.time == fulltime.join("-")));
+  //   agenda();
+  //  console.log(data);
   // clear inputs
-  document.getElementById("nom").value = "";
-  document.getElementById("gram").value = "";
-  document.getElementById("price").value = "";
-  document.getElementById("type").value = "";
-  document.querySelectorAll('input[name="operation"]')[0].checked = true;
-  document.querySelectorAll('input[name="type"]')[1].checked = true;
-  document.querySelectorAll('input[name="status"]')[0].checked = true;
+  vide();
 }
 function data_table(array) {
   let table = document.getElementById("tbody");
   table.innerHTML = "";
-  let totale = 0 ;
+  let totale = 0;
   array.forEach((column, i) => {
     if (column.newdata.status == 2 || column.newdata.operation == 0) {
-        totale -= Number(column.newdata.price) ;
-    }else{
-        totale += Number(column.newdata.price) ;
+      totale -= Number(column.newdata.price);
+    } else {
+      totale += Number(column.newdata.price);
     }
     let operation =
       column.newdata.operation == 0
@@ -148,22 +196,51 @@ function data_table(array) {
                   column.newdata.price ? column.newdata.price + "dh" : ""
                 }</td>
                 ${status}
-                <td><input type="submit" class="edit" style="--c:rgb(255, 179, 0);" value="تعديل" onclick="edit(${i})"><input type="submit" class="remove" style="--c:red;" value="حذف" onclick="remove(${i})"></td>
+                <td><input type="submit" class="edit" style="--c:rgb(255, 179, 0);" value="تعديل" onclick="edit(${
+                  column.id
+                },${i})"><input type="submit" class="remove" style="--c:red;" value="حذف" onclick="remove(${
+      column.id
+    })"></td>
                 </tr>`;
   });
-  document.getElementById('totale').innerHTML = totale + 'DH' ;
+  document.getElementById("totale").innerHTML = totale + "DH";
 }
 function remove(i) {
   if (confirm("هل تريد حذف هذا العنصر؟")) {
-    // remove item from data
-    data.splice(i, 1);
-    data_table(data);
+    // remove item from
+    let index = data.findIndex((obj) => obj.id == i);
+    data.splice(index, 1);
     localStorage.data = JSON.stringify(data);
+
+    data_table(
+      data.filter((item) => {
+        return (
+          (filter[0] < 0 || item.newdata.operation == filter[0]) &&
+          (filter[1] < 0 || item.newdata.type == filter[1]) &&
+          (filter[2] < 0 || item.newdata.status == filter[2]) &&
+          item.time == fulltime.join("-") &&
+          (item.newdata.name
+            .toLowerCase()
+            .includes(input.value.toLowerCase()) ||
+            item.newdata.description
+              .toLowerCase()
+              .includes(input.value.toLowerCase()) ||
+            item.newdata.gram
+              .toLowerCase()
+              .includes(input.value.toLowerCase()) ||
+            item.newdata.price
+              .toLowerCase()
+              .includes(input.value.toLowerCase()))
+        );
+      })
+    );
+    // data_table(data)
   }
 }
-function edit(i) {
+function edit(i, t) {
+  window.scrollTo({ top: 0, behavior: "smooth" });
   // get item from data
-  let item = data[i];
+  let item = data[data.findIndex((obj) => obj.id == i)];
   // fill inputs with item data
   document.getElementById("nom").value = item.newdata.name || "";
   document.getElementById("gram").value = item.newdata.gram || "";
@@ -181,12 +258,19 @@ function edit(i) {
   document.querySelectorAll(".edit").forEach((el) => {
     el.style.opacity = "1";
   });
-  document.getElementsByClassName("edit")[i].style.opacity = "0.5";
+  document.getElementsByClassName("edit")[t].style.opacity = "0.5";
   document.getElementById("add").value = "تاكيد";
   document.getElementById("add").style.backgroundColor = "green";
   document.getElementById("add").onclick = function () {
-    add(this, i);
+    // let index = data.findIndex(obj => obj.id == i) ;
+    // data.splice(index, 1,);
+    // localStorage.data = JSON.stringify(data);
+    add(
+      this,
+      data.findIndex((obj) => obj.id == i)
+    );
   };
+  // remove(i);
 }
 function incrementMonth(mode) {
   let month_name = document.getElementById("month-name");
@@ -219,7 +303,6 @@ function incrementMonth(mode) {
   fulltime = [fulltime[0], month + 1, fulltime[2]];
   month_name.innerHTML = months[month];
   document.getElementById("month").value = month;
-  console.log(month);
   data_table(
     data.filter((item) => {
       // return item.time == fulltime.join('-');
@@ -237,6 +320,11 @@ function incrementMonth(mode) {
       );
     })
   );
+  com = [data.filter(
+    (item) =>
+      item.time == fulltime.join('-')
+  ),com[1]];
+  Statistique(canvas_mode[0],canvas_mode[1]);    
 }
 function agenda() {
   let date = new Date();
@@ -291,10 +379,14 @@ function agenda() {
           );
         })
       );
+      com = [data.filter(
+    (item) =>
+      item.time == fulltime.join('-')
+  ),com[1]];
+      Statistique(canvas_mode[0],canvas_mode[1]);    
     };
   });
   document.getElementById("year").onkeyup = (event) => {
-    console.log();
     fulltime = [
       fulltime[0],
       fulltime[1],
@@ -322,6 +414,11 @@ function agenda() {
         );
       })
     );
+    com = [data.filter(
+    (item) =>
+      item.time == fulltime.join('-')
+  ),com[1]];
+    Statistique(canvas_mode[0],canvas_mode[1]);    
   };
 }
 function filter_table(item, mode, value) {
@@ -381,7 +478,7 @@ function again() {
     el.classList.remove("clicked");
   });
   input.value = "";
-  filter = [-1,-1,-1];
+  filter = [-1, -1, -1];
 }
 function search() {
   input.onkeyup = () => {
@@ -422,10 +519,368 @@ function show_main(element) {
 }
 search();
 agenda();
-data_table(data);
+data_table(
+  data.filter((item) => {
+    return (
+      (filter[0] < 0 || item.newdata.operation == filter[0]) &&
+      (filter[1] < 0 || item.newdata.type == filter[1]) &&
+      (filter[2] < 0 || item.newdata.status == filter[2]) &&
+      item.time == fulltime.join("-") &&
+      (item.newdata.name.toLowerCase().includes(input.value.toLowerCase()) ||
+        item.newdata.description
+          .toLowerCase()
+          .includes(input.value.toLowerCase()) ||
+        item.newdata.gram.toLowerCase().includes(input.value.toLowerCase()) ||
+        item.newdata.price.toLowerCase().includes(input.value.toLowerCase()))
+    );
+  })
+);
 document.addEventListener('click' ,() =>  {
 window.addEventListener("beforeunload", function (e) {
   e.preventDefault();
 });
 
 })
+
+//#################################################################################
+//#################################################################################
+//--------------Statistique--------------------------
+//#################################################################################
+//#################################################################################
+let x = 0;
+let com = [data.filter(
+    (item) =>
+      item.time == fulltime.join('-')
+  ),[
+    (function () {
+      x = 0;
+      data.filter(
+    (item) =>
+      item.time ==
+      fulltime.join('-')
+  ).forEach((item) => {
+        if (item.newdata.operation == 0) {
+          x++;
+        }
+      });
+      return x;
+    })(),
+    (function () {
+      x = 0;
+      data.filter(
+    (item) =>
+      item.time ==
+      fulltime.join('-')
+  ).forEach((item) => {
+        if (item.newdata.operation == 1) {
+          x++;
+        }
+      });
+      return x;
+    })(),
+    (function () {
+      x = 0;
+      data.filter(
+    (item) =>
+      item.time ==
+      fulltime.join('-')
+  ).forEach((item) => {
+        if (item.newdata.operation == 2) {
+          x++;
+        }
+      });
+      return x;
+    })(),
+    (function () {
+      x = 0;
+      data.filter(
+    (item) =>
+      item.time ==
+      fulltime.join('-')
+  ).forEach((item) => {
+        if (item.newdata.operation == 3) {
+          x++;
+        }
+      });
+      return x;
+    })()
+  ]];
+// console.log(com) ;
+function Canvas(mode,list) {
+    document.getElementById("canvas").remove();
+    let text , color , indo ;
+    let c =  document.createElement('canvas');
+    c.id = 'canvas' ;
+    c.className = 'mx-auto';
+    document.getElementById('p-c').appendChild(c);
+    switch (mode) {
+        case 0:
+            text = ['بيع','إصلاح','تشلال','شراء'];
+            color = ['red','#007bff','gold','green'];
+            info = 'الخدمة';
+            break;
+        case 1:
+            text =['ذهب','فضة','اخرى'];
+            color =['gold','gray','black'];
+            info = 'المنتوج';
+            break;
+        case 2:
+            text =['تم','في الانتظار','إلغاء'];
+            color =['green','orange','red'];
+            info = 'الخدمة';
+            break;
+    }
+    new Chart(document.getElementById("canvas"), {
+      type: "bar",
+      data: {
+        labels: text,
+        datasets: [{
+          label: info,
+          data: list,
+          backgroundColor: color
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: "top" }
+        }
+      }
+    });
+
+}
+function Statistique(mode, time) {
+  let day = data.filter(
+    (item) =>
+      item.time == fulltime.join('-')
+  );
+  let month = data.filter(
+    (item) => item.time.split("-")[1] == fulltime[1]
+  );
+  let year = data.filter(
+    (item) => item.time.split("-")[2] == fulltime[2]
+  );
+  switch (time) {
+    case 0:
+        com[day,com[1]];
+        break;
+    case 1:
+        com[month,com[1]];
+        break;
+    case 2:
+        com[year,com[1]];
+        break;
+  }
+  switch (mode) {
+    case 0:
+        com = [com[0],[
+    (function () {
+      x = 0;
+      com[0].forEach((item) => {
+        if (item.newdata.operation == 0) {
+          x++;
+        }
+      });
+      return x;
+    })(),
+    (function () {
+      x = 0;
+      com[0].forEach((item) => {
+        if (item.newdata.operation == 1) {
+          x++;
+        }
+      });
+      return x;
+    })(),
+    (function () {
+      x = 0;
+      com[0].forEach((item) => {
+        if (item.newdata.operation == 2) {
+          x++;
+        }
+      });
+      return x;
+    })(),
+    (function () {
+      x = 0;
+      com[0].forEach((item) => {
+        if (item.newdata.operation == 3) {
+          x++;
+        }
+      });
+      return x;
+    })()
+  ]]
+        break;
+    case 1:
+        com = [com[0],[
+    (function () {
+      x = 0;
+      com[0].forEach((item) => {
+        if (item.newdata.type == 0) {
+          x++;
+        }
+      });
+      return x;
+    })(),
+    (function () {
+      x = 0;
+      com[0].forEach((item) => {
+        if (item.newdata.type == 1) {
+          x++;
+        }
+      });
+      return x;
+    })(),
+    (function () {
+      x = 0;
+      com[0].forEach((item) => {
+        if (item.newdata.type == 2) {
+          x++;
+        }
+      });
+      return x;
+    })()
+  ]]
+        break;
+    case 2:
+        com = [com[0],[
+    (function () {
+      x = 0;
+      com[0].forEach((item) => {
+        if (item.newdata.status == 0) {
+          x++;
+        }
+      });
+      return x;
+    })(),
+    (function () {
+      x = 0;
+      com[0].forEach((item) => {
+        if (item.newdata.status == 1) {
+          x++;
+        }
+      });
+      return x;
+    })(),
+    (function () {
+      x = 0;
+      com[0].forEach((item) => {
+        if (item.newdata.status == 2) {
+          x++;
+        }
+      });
+      return x;
+    })()
+  ]]
+        break;
+  }
+  console.log(com[0]);
+  
+  Canvas(mode,com[1]);
+  canvas_mode = [mode,time];
+//   let status = [
+//     (function () {
+//       x = 0;
+//       day.forEach((item) => {
+//         if (item.newdata.status == 0) {
+//           x++;
+//         }
+//       });
+//       return x;
+//     })(),
+//     (function () {
+//       x = 0;
+//       day.forEach((item) => {
+//         if (item.newdata.status == 1) {
+//           x++;
+//         }
+//       });
+//       return x;
+//     })(),
+//     (function () {
+//       x = 0;
+//       day.forEach((item) => {
+//         if (item.newdata.status == 2) {
+//           x++;
+//         }
+//       });
+//       return x;
+//     })()
+//   ];
+//   let type = [
+//     (function () {
+//       x = 0;
+//       day.forEach((item) => {
+//         if (item.newdata.type == 0) {
+//           x++;
+//         }
+//       });
+//       return x;
+//     })(),
+//     (function () {
+//       x = 0;
+//       day.forEach((item) => {
+//         if (item.newdata.type == 1) {
+//           x++;
+//         }
+//       });
+//       return x;
+//     })(),
+//     (function () {
+//       x = 0;
+//       day.forEach((item) => {
+//         if (item.newdata.type == 2) {
+//           x++;
+//         }
+//       });
+//       return x;
+//     })()
+//   ];
+//   let operation = [
+//     (function () {
+//       x = 0;
+//       day.forEach((item) => {
+//         if (item.newdata.operation == 0) {
+//           x++;
+//         }
+//       });
+//       return x;
+//     })(),
+//     (function () {
+//       x = 0;
+//       day.forEach((item) => {
+//         if (item.newdata.operation == 1) {
+//           x++;
+//         }
+//       });
+//       return x;
+//     })(),
+//     (function () {
+//       x = 0;
+//       day.forEach((item) => {
+//         if (item.newdata.operation == 2) {
+//           x++;
+//         }
+//       });
+//       return x;
+//     })(),
+//     (function () {
+//       x = 0;
+//       day.forEach((item) => {
+//         if (item.newdata.operation == 3) {
+//           x++;
+//         }
+//       });
+//       return x;
+//     })()
+//   ];
+}
+function change_mode(element,mode = -1 ,time = -1,name) {
+    document.querySelectorAll('.' + name).forEach(item => {item.classList.remove('clicked')});
+    time >= 0 ? canvas_mode = [canvas_mode[0],time] : canvas_mode = [canvas_mode[0],canvas_mode[1]];
+    mode >= 0 ? canvas_mode = [mode,canvas_mode[1]] : canvas_mode = [canvas_mode[0],canvas_mode[1]];
+    Statistique(canvas_mode[0],canvas_mode[1]);    
+    element.classList.add('clicked');
+}
+Statistique(0,0)
