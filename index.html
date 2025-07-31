@@ -79,6 +79,22 @@
             </div>
         </div>
     </main> 
+   <section class="row gap-2 container px-5 mx-auto">        
+        <div class="col-3 row gap-3">
+            <button class="btn btn-light col-12 y clicked" onclick="change_mode(this,0,-1,'y')">العمليات</button>
+            <button class="btn btn-light col-12 y" onclick="change_mode(this,1,-1,'y')">المعدن</button>
+            <button class="btn btn-light col-12 y" onclick="change_mode(this,2,-1,'y')">الحالة</button>
+        </div>
+        <div class="col-9 mx-auto bg-light rounded" id="p-c">
+            <canvas id="canvas" class="mx-auto"></canvas>
+        </div>
+        <div class="row col-12 gap-3 justify-content-around">
+            <div class="col-3"></div>
+            <button class="btn btn-light col-2 x clicked" onclick="change_mode(this,-1,0,'x')">هذا اليوم</button>
+            <button class="btn btn-light col-2 x" onclick="change_mode(this,-1,1,'x')">شهري</button>
+            <button class="btn btn-light col-2 x" onclick="change_mode(this,-1,2,'x')">سنوي</button>
+        </div>
+   </section>
     <table class="table table-dark table-bordered text-center mt-4">
         <thead >
             <tr>
@@ -132,11 +148,13 @@
         <tbody id="tbody">
         </tbody>
     </table>
+    <script src="chart.js"></script>
     <script src="app.js"></script>
     <script>
         if (navigator.serviceWorker) {
     navigator.serviceWorker.register('service-worker.js');
 }
     </script>
+
 </body>
 </html>
