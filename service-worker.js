@@ -5,17 +5,17 @@ const urlsToCache = [
   '/0/style.css',
   '/0/app.js',
   '/0/manifest.json',
-  '/0/bootstrap.css'
+  '/0/bootstrap.css',
+  '/0/chart.js'
 ];
 
 self.addEventListener('install', event => {
- event.waitUntil(
-  caches.open(CACHE_NAME).then(cache => {
-    return cache.addAll(urlsToCache).catch(err => {
-      console.error("Cache failed:", err);
-    });
-  })
-);
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => {
+        return cache.addAll(urlsToCache);
+      })
+  );
 });
 
 self.addEventListener('activate', event => {
