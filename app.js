@@ -38,6 +38,11 @@ function add(click, i = -1) {
     document.querySelectorAll('input[name="operation"]')[1].checked = true;
     document.querySelectorAll('input[name="type"]')[1].checked = true;
     document.querySelectorAll('input[name="status"]')[0].checked = true;
+    com = [data.filter(
+    (item) =>
+      item.time == fulltime.join('-')
+  ),com[1]];
+    Statistique(canvas_mode[0],canvas_mode[1]);    
   }
   //efect on click
 
@@ -235,6 +240,11 @@ function remove(i) {
       })
     );
     // data_table(data)
+    com = [data.filter(
+    (item) =>
+      item.time == fulltime.join('-')
+  ),com[1]];
+    Statistique(canvas_mode[0],canvas_mode[1]);    
   }
 }
 function edit(i, t) {
