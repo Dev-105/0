@@ -119,6 +119,9 @@ function add(click, i = -1) {
       })
     );
     vide();
+    document.getElementById("add").onclick = function () {
+      add(this)
+    }
     return true;
   }
   // add user to local storage
@@ -276,9 +279,6 @@ function edit(i, t) {
   document.getElementById("add").value = "تاكيد";
   document.getElementById("add").style.backgroundColor = "green";
   document.getElementById("add").onclick = function () {
-    // let index = data.findIndex(obj => obj.id == i) ;
-    // data.splice(index, 1,);
-    // localStorage.data = JSON.stringify(data);
     add(
       this,
       data.findIndex((obj) => obj.id == i)
