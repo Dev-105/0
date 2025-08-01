@@ -133,13 +133,11 @@ function add(click, i = -1) {
 function data_table(array) {
   let table = document.getElementById("tbody");
   table.innerHTML = "";
-  let totale = 0;
+  let totale_s = 0;
+  let totale_w = 0;
+  let totale_r = 0;
   array.forEach((column, i) => {
-    if (column.newdata.status == 2 || column.newdata.operation == 0) {
-      totale -= Number(column.newdata.price);
-    } else {
-      totale += Number(column.newdata.price);
-    }
+    column.newdata.status == 0 && column.newdata.operation != 0 ? totale_s += Number(column.newdata.price) : column.newdata.status == 1 ? totale_w += Number(column.newdata.price) : totale_r += Number(column.newdata.price) ;
     let operation =
       column.newdata.operation == 0
         ? `<td class="operation">بيع</td>
@@ -209,7 +207,11 @@ function data_table(array) {
     })"></td>
                 </tr>`;
   });
-  document.getElementById("totale").innerHTML = totale + "DH";
+  document.getElementById("totale").innerHTML = `
+    <td colspan="5" class="time fw-bolder" style="background:green;opacity:0.4">${totale_s}DH</td>
+    <td colspan="5" class="time fw-bolder" style="background:orange;opacity:0.4">${totale_w}DH</td>
+    <td colspan="5" class="time fw-bolder" style="background:red;opacity:0.4">${totale_r}DH</td>
+  `;
 }
 function remove(i) {
   if (confirm("هل تريد حذف هذا العنصر؟")) {
