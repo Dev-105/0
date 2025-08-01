@@ -39,10 +39,11 @@ function add(click, i = -1) {
     document.querySelectorAll('input[name="type"]')[1].checked = true;
     document.querySelectorAll('input[name="status"]')[0].checked = true;
     com = [data.filter(
-    (item) =>
-      item.time == fulltime.join('-')
-  ),com[1]];
+        (item) =>
+            item.time == fulltime.join('-')
+    ),com[1]];
     Statistique(canvas_mode[0],canvas_mode[1]);    
+    document.getElementById("nom").focus();
   }
   //efect on click
 
@@ -244,7 +245,8 @@ function remove(i) {
     (item) =>
       item.time == fulltime.join('-')
   ),com[1]];
-    Statistique(canvas_mode[0],canvas_mode[1]);    
+    Statistique(canvas_mode[0],canvas_mode[1]);  
+    document.getElementById("nom").focus();  
   }
 }
 function edit(i, t) {
@@ -519,9 +521,11 @@ function search() {
 function show_main(element) {
   if (count_show % 2 == 0) {
     document.querySelector("main").style = "display:none !important ;";
+    document.querySelector("section").style = "display:none !important ;";
     document.getElementById("filter").style.display = "block";
     count_show++;
-  } else {
+} else {
+      document.querySelector("section").style = "display:flex ;";
     document.querySelector("main").style = "display:flex;";
     count_show--;
     element.style.display = "none";
@@ -672,13 +676,14 @@ function Statistique(mode, time) {
   );
   switch (time) {
     case 0:
-        com[day,com[1]];
+        com = [day,com[1]];
         break;
     case 1:
-        com[month,com[1]];
+        com = [month,com[1]];
+        // console.log(com,day);
         break;
     case 2:
-        com[year,com[1]];
+        com = [year,com[1]];
         break;
   }
   switch (mode) {
@@ -785,7 +790,6 @@ function Statistique(mode, time) {
   ]]
         break;
   }
-  console.log(com[0]);
   
   Canvas(mode,com[1]);
   canvas_mode = [mode,time];
