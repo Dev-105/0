@@ -79,7 +79,7 @@
             </div>
         </div>
     </main> 
-   <section class="row gap-2 container px-5 mx-auto">        
+   <section class="row gap-2 container px-5 mx-auto" id="section">        
         <div class="col-3 row gap-3">
             <button class="btn btn-light col-12 y clicked" onclick="change_mode(this,0,-1,'y')">العمليات</button>
             <button class="btn btn-light col-12 y" onclick="change_mode(this,1,-1,'y')">المعدن</button>
@@ -141,8 +141,8 @@
                 <td><input type="radio" value="2" name="status" id="canceled"> <label for="canceled" class="label-radio" style="--c:red"></label></td>
                 <td><input type="submit" id="add" value="إضافة" onclick="add(this)"></td>
             </tr>
-            <tr>
-                    <td colspan="15" class="time fw-bolder" id="totale"></td>
+            <tr id="totale">
+                    
             </tr>
         </tbody>
         <tbody id="tbody">
